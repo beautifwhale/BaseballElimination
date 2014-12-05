@@ -19,10 +19,10 @@ public class BaseballElimination {
 	
 	public BaseballElimination(String filename)
 	{
-		In in = new In();
+		In in = new In(filename);
 		
 		// number of teams in the division
-		m_iNumberOfTeams = Integer.parseInt(in.readLine());
+		m_iNumberOfTeams = in.readInt();
 		
 		// array of team names
 		m_straTeamNames = new String[m_iNumberOfTeams];
@@ -42,7 +42,7 @@ public class BaseballElimination {
 		{
 			StdOut.printf("%d ", i);
 			// get the team name
-			String teamName = in.readLine();
+			String teamName = in.readString();
 			StdOut.printf("%s ", teamName); 
 			// add team to the queue
 			m_strqTeams.enqueue(teamName);
@@ -52,13 +52,13 @@ public class BaseballElimination {
 			m_stTeams.put(teamName, i);
 			
 			// set the number of wins for the team
-			m_aiWins[i] = Integer.parseInt(in.readLine());
+			m_aiWins[i] = in.readInt();
 			StdOut.printf("%d ", m_aiWins[i]);
 			// set the number of losses for the team
-			m_aiLosses[i] = Integer.parseInt(in.readLine());
+			m_aiLosses[i] = in.readInt();
 			StdOut.printf("%d ", m_aiLosses[i]);
 			// set the number of games left to play
-			m_aiRemaining[i] = Integer.parseInt(in.readLine());
+			m_aiRemaining[i] = in.readInt();
 			StdOut.printf("%d ", m_aiRemaining[i]);
 			// set the number of games left to play against 
 			// each of the other teams. j is the second teams
@@ -66,10 +66,10 @@ public class BaseballElimination {
 			for(int j = 0; j < m_iNumberOfTeams; j++)
 			{
 				// input the number of games
-				m_aaiAgainst[i][j] = Integer.parseInt(in.readLine());
+				m_aaiAgainst[i][j] = in.readInt();
 				StdOut.printf("%d ", m_aaiAgainst[i][j]);
 			}			
-			StdOut.printf("\n");
+			StdOut.print("\n");
 		}
 		
 	}
