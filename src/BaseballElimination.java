@@ -38,6 +38,8 @@ public class BaseballElimination {
 		// symbol table to identify the teams in the arrays
 		m_stTeams = new ST<String, Integer>();
 		
+		
+		
 	}
 	
 	// number of teams in the division
@@ -106,11 +108,13 @@ public class BaseballElimination {
 	
 	public boolean isEliminated(String team)
 	{
+		StdOut.printf("in isEliminated %s\n", team);
 		return true;
 	}
 	
 	public Iterable<String> certificateOfElimination(String team)
 	{
+		StdOut.printf("in certificateOfElimination %s\n", team);
 		return null;
 	}
 
