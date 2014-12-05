@@ -38,7 +38,39 @@ public class BaseballElimination {
 		// symbol table to identify the teams in the arrays
 		m_stTeams = new ST<String, Integer>();
 		
-		
+		for(int i = 0; i < m_iNumberOfTeams; i++)
+		{
+			StdOut.printf("%d ", i);
+			// get the team name
+			String teamName = in.readLine();
+			StdOut.printf("%s ", teamName); 
+			// add team to the queue
+			m_strqTeams.enqueue(teamName);
+			
+			// use team name as key and store the array index
+			// as a value in the symbol table
+			m_stTeams.put(teamName, i);
+			
+			// set the number of wins for the team
+			m_aiWins[i] = Integer.parseInt(in.readLine());
+			StdOut.printf("%d ", m_aiWins[i]);
+			// set the number of losses for the team
+			m_aiLosses[i] = Integer.parseInt(in.readLine());
+			StdOut.printf("%d ", m_aiLosses[i]);
+			// set the number of games left to play
+			m_aiRemaining[i] = Integer.parseInt(in.readLine());
+			StdOut.printf("%d ", m_aiRemaining[i]);
+			// set the number of games left to play against 
+			// each of the other teams. j is the second teams
+			// index
+			for(int j = 0; j < m_iNumberOfTeams; j++)
+			{
+				// input the number of games
+				m_aaiAgainst[i][j] = Integer.parseInt(in.readLine());
+				StdOut.printf("%d ", m_aaiAgainst[i][j]);
+			}			
+			StdOut.printf("\n");
+		}
 		
 	}
 	
