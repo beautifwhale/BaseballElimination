@@ -43,7 +43,7 @@ public class BaseballElimination {
 			StdOut.printf("%d ", i);
 			// get the team name
 			String teamName = in.readString();
-			StdOut.printf("%s ", teamName); 
+			StdOut.printf("%s\t", teamName); 
 			// add team to the queue
 			m_strqTeams.enqueue(teamName);
 			
@@ -59,7 +59,7 @@ public class BaseballElimination {
 			StdOut.printf("%d ", m_aiLosses[i]);
 			// set the number of games left to play
 			m_aiRemaining[i] = in.readInt();
-			StdOut.printf("%d ", m_aiRemaining[i]);
+			StdOut.printf("%d    ", m_aiRemaining[i]);
 			// set the number of games left to play against 
 			// each of the other teams. j is the second teams
 			// index
