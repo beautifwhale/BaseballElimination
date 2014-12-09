@@ -149,6 +149,7 @@ public class BaseballElimination {
 	
 	public boolean isEliminated(String team)
 	{
+		// Donnchadh's comment
 		StdOut.printf("in isEliminated %s\n", team);
 		return true;
 	}
