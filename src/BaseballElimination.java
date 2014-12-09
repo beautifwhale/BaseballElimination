@@ -1,8 +1,9 @@
-
-// david
-
-// extra comment
-// feature comment
+/**
+ * Baseball Elimination
+ * 
+ * @author David Morton and Donnchadh 
+ *
+ */
 public class BaseballElimination {
 	
 	// number of teams in the division
