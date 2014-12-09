@@ -8,6 +8,7 @@ public class BaseballElimination {
 	
 	// number of teams in the division
 	private int m_iNumberOfTeams;
+	private int m_iNumberOfMatches;
 			
 	private String[] m_straTeamNames;
 	private int[] m_aiWins; // wins
@@ -28,7 +29,7 @@ public class BaseballElimination {
 		
 		// number of teams in the division
 		m_iNumberOfTeams = in.readInt();
-		
+				
 		// array of team names
 		m_straTeamNames = new String[m_iNumberOfTeams];
 						
@@ -76,14 +77,7 @@ public class BaseballElimination {
 			}			
 			StdOut.print("\n");
 		}
-		// create a flow network
-		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
-		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfTeams * (m_iNumberOfTeams - 1));
-		
-		//  add edge to the flow network
-		m_FlowNetwork.addEdge(new FlowEdge(0, 1, Double.POSITIVE_INFINITY));
-		StdOut.println(m_FlowNetwork);
-		
+				
 	}
 	
 	// number of teams in the division
@@ -152,7 +146,16 @@ public class BaseballElimination {
 	
 	public boolean isEliminated(String team)
 	{
-		// Donnchadh's comment
+		// create a flow network
+		// get number of matches
+		m_iNumberOfMatches = m_iNumberOfTeams * (m_iNumberOfTeams - 1) / 2;
+		
+		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
+		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches + m_iNumberOfTeams + 2);
+		
+		//  add edge to the flow network
+		m_FlowNetwork.addEdge(new FlowEdge(0, 1, Double.POSITIVE_INFINITY));
+		StdOut.println(m_FlowNetwork);
 		StdOut.printf("in isEliminated %s\n", team);
 		return true;
 	}
