@@ -164,6 +164,14 @@ public class BaseballElimination {
 		}
 		
 		// add nested for loop to connect matches with teams
+		for (int i = 0; i < m_iNumberOfTeams; i++) {
+			for (int j = i + 1; j < m_iNumberOfTeams; j++) {
+				
+				
+				// connect matches with teams here
+				
+			}	
+		}
 		
 		// connect teams to the end vertex t, index 11
 		StdOut.println(m_FlowNetwork);
