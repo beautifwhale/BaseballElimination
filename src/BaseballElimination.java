@@ -157,7 +157,7 @@ public class BaseballElimination {
 		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
 		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches + m_iNumberOfTeams + 2);
 		
-		//  add edge to the flow network
+		//  add edges from source to the matches
 		for(int i = 0; i < m_iNumberOfMatches; i++)
 		{
 			m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex, i, Double.POSITIVE_INFINITY));			
@@ -172,10 +172,10 @@ public class BaseballElimination {
 				
 			}	
 		}
-		
 		// connect teams to the end vertex t, index 11
-		StdOut.println(m_FlowNetwork);
-		StdOut.printf("in isEliminated %s\n", team);
+		
+		// print the flow network
+		StdOut.println(m_FlowNetwork);		
 		return true;
 	}
 	
