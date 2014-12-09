@@ -147,14 +147,25 @@ public class BaseballElimination {
 	public boolean isEliminated(String team)
 	{
 		// create a flow network
+		
 		// get number of matches
 		m_iNumberOfMatches = m_iNumberOfTeams * (m_iNumberOfTeams - 1) / 2;
+				
+		int sVertexIndex = m_iNumberOfMatches + m_iNumberOfTeams; // sourceIndex
+		int tVertexIndex = sVertexIndex + 1; // sinkIndex		
 		
 		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
 		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches + m_iNumberOfTeams + 2);
 		
 		//  add edge to the flow network
-		m_FlowNetwork.addEdge(new FlowEdge(0, 1, Double.POSITIVE_INFINITY));
+		for(int i = 0; i < m_iNumberOfMatches; i++)
+		{
+			m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex, i, Double.POSITIVE_INFINITY));			
+		}
+		
+		// add nested for loop to connect matches with teams
+		
+		// connect teams to the end vertex t, index 11
 		StdOut.println(m_FlowNetwork);
 		StdOut.printf("in isEliminated %s\n", team);
 		return true;
