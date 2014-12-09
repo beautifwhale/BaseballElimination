@@ -1,4 +1,5 @@
 # ignore eclipse generated files
 bin/
-*.project
-*.classpath
+.settings
+.project
+.classpath
