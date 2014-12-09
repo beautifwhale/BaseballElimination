@@ -71,6 +71,10 @@ public class BaseballElimination {
 			}			
 			StdOut.print("\n");
 		}
+		// create a flow network
+		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
+		FlowNetwork m_FlowNetwork = new FlowNetwork(1 + (m_iNumberOfTeams * (m_iNumberOfTeams -1)) + 1);
+		StdOut.println(m_FlowNetwork);
 		
 	}
 	
