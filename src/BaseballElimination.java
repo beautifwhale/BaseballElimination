@@ -19,10 +19,10 @@ public class BaseballElimination {
 	
 	public BaseballElimination(String filename)
 	{
-		In in = new In();
+		In in = new In(filename);
 		
 		// number of teams in the division
-		m_iNumberOfTeams = Integer.parseInt(in.readLine());
+		m_iNumberOfTeams = in.readInt();
 		
 		// array of team names
 		m_straTeamNames = new String[m_iNumberOfTeams];
@@ -38,7 +38,43 @@ public class BaseballElimination {
 		// symbol table to identify the teams in the arrays
 		m_stTeams = new ST<String, Integer>();
 		
-		
+		for(int i = 0; i < m_iNumberOfTeams; i++)
+		{
+			StdOut.printf("%d ", i);
+			// get the team name
+			String teamName = in.readString();
+			StdOut.printf("%s\t", teamName); 
+			// add team to the queue
+			m_strqTeams.enqueue(teamName);
+			
+			// use team name as key and store the array index
+			// as a value in the symbol table
+			m_stTeams.put(teamName, i);
+			
+			// set the number of wins for the team
+			m_aiWins[i] = in.readInt();
+			StdOut.printf("%d ", m_aiWins[i]);
+			// set the number of losses for the team
+			m_aiLosses[i] = in.readInt();
+			StdOut.printf("%d ", m_aiLosses[i]);
+			// set the number of games left to play
+			m_aiRemaining[i] = in.readInt();
+			StdOut.printf("%d    ", m_aiRemaining[i]);
+			// set the number of games left to play against 
+			// each of the other teams. j is the second teams
+			// index
+			for(int j = 0; j < m_iNumberOfTeams; j++)
+			{
+				// input the number of games
+				m_aaiAgainst[i][j] = in.readInt();
+				StdOut.printf("%d ", m_aaiAgainst[i][j]);
+			}			
+			StdOut.print("\n");
+		}
+		// create a flow network
+		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
+		FlowNetwork m_FlowNetwork = new FlowNetwork(1 + (m_iNumberOfTeams * (m_iNumberOfTeams -1)) + 1);
+		StdOut.println(m_FlowNetwork);
 		
 	}
 	
