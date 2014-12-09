@@ -1,9 +1,8 @@
-<<<<<<< HEAD
-// david
-=======
-// extra comment
 
->>>>>>> Added comment to top of the file
+// david
+
+// extra comment
+// feature comment
 public class BaseballElimination {
 	
 	// number of teams in the division
