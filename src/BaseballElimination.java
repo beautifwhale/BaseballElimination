@@ -157,17 +157,23 @@ public class BaseballElimination {
 		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
 		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches + m_iNumberOfTeams + 2);
 		
+		
 		//  add edges from source to the matches
 		for(int i = 0; i < m_iNumberOfMatches; i++)
 		{
 			m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex, i, Double.POSITIVE_INFINITY));			
+		}	
+		
+		// add edges from teams to vertex t (sinkIndex)		
+		for(int i = m_iNumberOfMatches ;i < m_FlowNetwork.V(); i++)
+		{
+			m_FlowNetwork.addEdge(new FlowEdge(i, tVertexIndex, Double.POSITIVE_INFINITY));			
 		}
 		
 		// add nested for loop to connect matches with teams
 		for (int i = 0; i < m_iNumberOfTeams; i++) {
 			for (int j = i + 1; j < m_iNumberOfTeams; j++) {
-				
-				
+								
 				// connect matches with teams here
 				
 			}	
