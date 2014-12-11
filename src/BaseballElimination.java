@@ -213,7 +213,10 @@ public class BaseballElimination {
 			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, tVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i]));
 		}	
 		
-		
+		// run the FordFulkerson algorithm on the flow network to determine
+		// the augmenting paths
+		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
+				
 		// print the flow network
 		StdOut.println(m_FlowNetwork);		
 		return true;
