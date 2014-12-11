@@ -207,11 +207,12 @@ public class BaseballElimination {
 
 
 		int iCurrentVertex = 0; // the first match
-
-		// add edges between the vertices in the flow network
-		for (int i = 0; i < m_iNumberOfTeams; i++) {
+		
+		//  add edges between the vertices in the flow network
+		for(int i = 0; i < m_iNumberOfTeams; i++) 
+		{
 			// connect the matches to appropriate team vertex
-
+			// source -> match -> team -> target
 			for (int j = i + 1; j < m_iNumberOfTeams; j++) 
 			{
 				// add edges between the sourceVertex and the matches.
@@ -219,19 +220,17 @@ public class BaseballElimination {
 				// two dimensional array Against[][] that contains the number 
 				// of matches each team has against each other
 
-				m_FlowNetwork.addEdge(new FlowEdge(sourceVertexIndex, iCurrentVertex, m_aaiAgainst[i][j]));
+				m_FlowNetwork.addEdge(new FlowEdge(sourceVertexIndex, iCurrentVertex, m_aaiAgainst[i][j]));// source -> match
 								
 				// add edge between the match vertex and the two teams playing in that match
 				// team one
-				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex,
-						m_iNumberOfMatches + i, Double.POSITIVE_INFINITY));
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + i, Double.POSITIVE_INFINITY)); // match -> team1
 				// team two
-
-				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + j, Double.POSITIVE_INFINITY));
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + j, Double.POSITIVE_INFINITY)); // match -> team2
 								
 				// increment the match counter to deal with team1 & team2
 				// in the next match
-				iCurrentVertex++; 			
+				iCurrentVertex++; // next match			
 			}
 
 			// add edge between the teams and the target vertex
@@ -239,7 +238,7 @@ public class BaseballElimination {
 			// team we are checking, their wins + remaining games - all the
 			// other
 			// teams total wins
-			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, targetVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i]));
+			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, targetVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i])); // team -> target
 		}
 		
 		// print the flow network
