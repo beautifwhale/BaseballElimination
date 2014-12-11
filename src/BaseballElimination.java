@@ -158,7 +158,7 @@ public class BaseballElimination {
 	}
 
 	/*
-	 * Has the team been eliminated from the division?
+	 * Has the team got a chance of winning the league?
 	 * 
 	 * @param team is the team being checked for elimination
 	 * @return boolean if the team has been eliminated
@@ -197,13 +197,14 @@ public class BaseballElimination {
 		// get number of matches
 		m_iNumberOfMatches = m_iNumberOfTeams * (m_iNumberOfTeams - 1) / 2;
 
-		int sVertexIndex = m_iNumberOfMatches + m_iNumberOfTeams; // sourceIndex
-		int tVertexIndex = sVertexIndex + 1; // targetIndex
+		int sourceVertexIndex = m_iNumberOfMatches + m_iNumberOfTeams; // sourceIndex
+		int targetVertexIndex = sourceVertexIndex + 1; // targetIndex
 
 		// number of vertices = m_iNumberOfMatches + m_iNumberOfTeams +
 		// sourceVertex + targetVertex
 		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches
 				+ m_iNumberOfTeams + 2);
+
 
 		int iCurrentVertex = 0; // the first match
 
@@ -217,11 +218,10 @@ public class BaseballElimination {
 				// set the flow capacity of the edge that is stored in the 
 				// two dimensional array Against[][] that contains the number 
 				// of matches each team has against each other
-				m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex,
-						iCurrentVertex, m_aaiAgainst[i][j]));
 
-				// add edge between the match vertex and the two teams playing
-				// in that match
+				m_FlowNetwork.addEdge(new FlowEdge(sourceVertexIndex, iCurrentVertex, m_aaiAgainst[i][j]));
+								
+				// add edge between the match vertex and the two teams playing in that match
 				// team one
 				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex,
 						m_iNumberOfMatches + i, Double.POSITIVE_INFINITY));
@@ -239,7 +239,7 @@ public class BaseballElimination {
 			// team we are checking, their wins + remaining games - all the
 			// other
 			// teams total wins
-			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, tVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i]));
+			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, targetVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i]));
 		}
 		
 		// print the flow network
@@ -247,14 +247,14 @@ public class BaseballElimination {
 		
 		// run the FordFulkerson algorithm on the flow network to determine
 		// the augmenting paths
-		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
+		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sourceVertexIndex, targetVertexIndex);
 		
 		// check each edge from the source to each match vertex. If each edges
 		// flow value is not at full capacity, the team is eliminated
 		// because they cannot win even if they manage to win all of there
 		// remaining games and the team in the lead loses all of their 
 		// remaining games
-		for (FlowEdge edge : m_FlowNetwork.adj(sVertexIndex)) 
+		for (FlowEdge edge : m_FlowNetwork.adj(sourceVertexIndex)) 
 		{
 			//StdOut.println(edge.toString());
 			// check each edge adjacent from the source vertex
