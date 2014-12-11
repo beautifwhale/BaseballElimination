@@ -51,12 +51,13 @@ public class BaseballElimination {
 
 		// symbol table to identify the teams in the arrays
 		m_stTeams = new ST<String, Integer>();
-
-		for (int i = 0; i < m_iNumberOfTeams; i++) {
-			StdOut.printf("%d ", i);
+		
+		for(int i = 0; i < m_iNumberOfTeams; i++)
+		{
+			//StdOut.printf("%d ", i);
 			// get the team name
 			String teamName = in.readString();
-			StdOut.printf("%s\t", teamName);
+			//StdOut.printf("%s\t", teamName); 
 			// add team to the queue
 			m_strqTeams.enqueue(teamName);
 
@@ -66,23 +67,25 @@ public class BaseballElimination {
 
 			// set the number of wins for the team
 			m_aiWins[i] = in.readInt();
-			StdOut.printf("%d ", m_aiWins[i]);
+			//StdOut.printf("%d ", m_aiWins[i]);
 			// set the number of losses for the team
 			m_aiLosses[i] = in.readInt();
-			StdOut.printf("%d ", m_aiLosses[i]);
+			//StdOut.printf("%d ", m_aiLosses[i]);
 			// set the number of games left to play
 			m_aiRemaining[i] = in.readInt();
-			StdOut.printf("%d    ", m_aiRemaining[i]);
 
-			// set the number of games left to play against
+			//StdOut.printf("%d    ", m_aiRemaining[i]);
+			
+			// set the number of games left to play against 
 			// each of the other teams. j is the second teams
 			// index
 			for (int j = 0; j < m_iNumberOfTeams; j++) {
 				// input the number of games
 				m_aaiAgainst[i][j] = in.readInt();
 				StdOut.printf("%d ", m_aaiAgainst[i][j]);
-			}
-			StdOut.print("\n");
+
+			}			
+			//StdOut.print("\n");
 		}
 
 	}
@@ -171,19 +174,24 @@ public class BaseballElimination {
 		// is the team eliminated based on the number
 		// of games it has left to play compared to the
 		// other teams wins
-		int iTeam = m_stTeams.get(team); // get the index of the team we are
-											// checking
-		for (int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++) {
+
+		int iTeam = m_stTeams.get(team); // get the index of the team we are checking
+		
+		// trivial elimination
+		for(int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++)
+		{
 			// if the teams wins + remaining games is less than any other
 			// teams total wins, the team is eliminated based on:
 			// not being able to catch up with the other teams if they win
 			// all of their games
-			if (m_aiWins[iTeam] + m_aiRemaining[iTeam] < m_aiWins[iOtherTeams]) {
+			if (m_aiWins[iTeam] + m_aiRemaining[iTeam] < m_aiWins[iOtherTeams]) 
+			{
 				// team is eliminated
 				return true;
 			}
-		} // end for if team is not eliminated
 
+		} // end for: team is not trivially eliminated
+		
 		// create a flow network
 
 		// get number of matches
@@ -202,10 +210,12 @@ public class BaseballElimination {
 		// add edges between the vertices in the flow network
 		for (int i = 0; i < m_iNumberOfTeams; i++) {
 			// connect the matches to appropriate team vertex
-			for (int j = i + 1; j < m_iNumberOfTeams; j++) {
-				// add edges between the sourceVertex and the matches
-				// add the flow capacity of the edge that is stored in the
-				// two dimensional array Against[][] that contains the number
+
+			for (int j = i + 1; j < m_iNumberOfTeams; j++) 
+			{
+				// add edges between the sourceVertex and the matches.
+				// set the flow capacity of the edge that is stored in the 
+				// two dimensional array Against[][] that contains the number 
 				// of matches each team has against each other
 				m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex,
 						iCurrentVertex, m_aaiAgainst[i][j]));
@@ -216,10 +226,12 @@ public class BaseballElimination {
 				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex,
 						m_iNumberOfMatches + i, Double.POSITIVE_INFINITY));
 				// team two
-				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex,
-						m_iNumberOfMatches + j, Double.POSITIVE_INFINITY));
 
-				iCurrentVertex++;
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + j, Double.POSITIVE_INFINITY));
+								
+				// increment the match counter to deal with team1 & team2
+				// in the next match
+				iCurrentVertex++; 			
 			}
 
 			// add edge between the teams and the target vertex
@@ -227,18 +239,35 @@ public class BaseballElimination {
 			// team we are checking, their wins + remaining games - all the
 			// other
 			// teams total wins
-			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i,
-					tVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam]
-							- m_aiWins[i]));
+			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, tVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i]));
 		}
-
+		
+		// print the flow network
+		//StdOut.println(m_FlowNetwork);
+		
 		// run the FordFulkerson algorithm on the flow network to determine
 		// the augmenting paths
 		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
-
-		// print the flow network
-		   StdOut.println(m_FlowNetwork);
-		return true;
+		
+		// check each edge from the source to each match vertex. If each edges
+		// flow value is not at full capacity, the team is eliminated
+		// because they cannot win even if they manage to win all of there
+		// remaining games and the team in the lead loses all of their 
+		// remaining games
+		for (FlowEdge edge : m_FlowNetwork.adj(sVertexIndex)) 
+		{
+			//StdOut.println(edge.toString());
+			// check each edge adjacent from the source vertex
+			if (edge.flow() != edge.capacity())
+			{
+				// if each edge is not full the team is eliminated
+				return true;
+			}	    	  
+	    }			
+		
+		// all edges adjacent from the source vertex are full
+		// that means that this team has a chance to win. 
+		return false;
 	}
 
 	public Iterable<String> certificateOfElimination(String team) {
@@ -307,9 +336,12 @@ public class BaseballElimination {
 		for (String team : division.teams()) {
 			if (division.isEliminated(team)) {
 				StdOut.print(team + " is eliminated by the subset R = { ");
-				for (String t : division.certificateOfElimination(team)) {
+				
+				for (String t : division.certificateOfElimination(team))
+				{
 					StdOut.print(t);
 				}
+				
 				StdOut.println("}");
 			} else {
 				StdOut.println(team + " is not eliminated");
