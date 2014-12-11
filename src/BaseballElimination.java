@@ -66,6 +66,7 @@ public class BaseballElimination {
 			// set the number of games left to play
 			m_aiRemaining[i] = in.readInt();
 			StdOut.printf("%d    ", m_aiRemaining[i]);
+			
 			// set the number of games left to play against 
 			// each of the other teams. j is the second teams
 			// index
@@ -146,6 +147,27 @@ public class BaseballElimination {
 	
 	public boolean isEliminated(String team)
 	{
+		// check if the team is in the division table
+		if (!m_stTeams.contains(team))
+		{
+		    throw new java.lang.IllegalArgumentException();
+		}
+		
+		// is the team eliminated based on the number 
+		// of games it has left to play compared to the 
+		// other teams wins
+		int iTeam = m_stTeams.get(team); // get the index of the team 
+		for(int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++)
+		{
+			// if the teams wins and remaining games is less than any other
+			// teams total wins, the team is eliminated based on the not being
+			// able to catch up with the other teams
+			if(m_aiWins[iTeam] + m_aiRemaining[iTeam] < m_aiWins[iOtherTeams])
+			{
+				return true;
+			}
+		}
+		
 		// create a flow network
 		
 		// get number of matches
