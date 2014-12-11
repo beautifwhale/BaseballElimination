@@ -150,23 +150,26 @@ public class BaseballElimination {
 		// check if the team is in the division table
 		if (!m_stTeams.contains(team))
 		{
+			// throw error if team is not in table
 		    throw new java.lang.IllegalArgumentException();
 		}
 		
 		// is the team eliminated based on the number 
 		// of games it has left to play compared to the 
 		// other teams wins
-		int iTeam = m_stTeams.get(team); // get the index of the team 
+		int iTeam = m_stTeams.get(team); // get the index of the team we are checking
 		for(int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++)
 		{
-			// if the teams wins and remaining games is less than any other
-			// teams total wins, the team is eliminated based on the not being
-			// able to catch up with the other teams
+			// if the teams wins + remaining games is less than any other
+			// teams total wins, the team is eliminated based on: 
+			// not being able to catch up with the other teams if they win
+			// all of their games
 			if(m_aiWins[iTeam] + m_aiRemaining[iTeam] < m_aiWins[iOtherTeams])
 			{
+				// team is eliminated
 				return true;
 			}
-		}
+		} // end for if team is not eliminated
 		
 		// create a flow network
 		
@@ -174,33 +177,42 @@ public class BaseballElimination {
 		m_iNumberOfMatches = m_iNumberOfTeams * (m_iNumberOfTeams - 1) / 2;
 				
 		int sVertexIndex = m_iNumberOfMatches + m_iNumberOfTeams; // sourceIndex
-		int tVertexIndex = sVertexIndex + 1; // sinkIndex		
+		int tVertexIndex = sVertexIndex + 1; // targetIndex		
 		
-		// number of vertices = s + (Number of teams * (Number of teams -1)) + t
+		// number of vertices = m_iNumberOfMatches + m_iNumberOfTeams + sourceVertex + targetVertex
 		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches + m_iNumberOfTeams + 2);
 		
+		int iCurrentVertex = 0; // the first match
 		
-		//  add edges from source to the matches
-		for(int i = 0; i < m_iNumberOfMatches; i++)
+		//  add edges between the vertices in the flow network
+		for(int i = 0; i < m_iNumberOfTeams; i++)
 		{
-			m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex, i, Double.POSITIVE_INFINITY));			
+			// connect the matches to appropriate team vertex
+			for (int j = i + 1; j < m_iNumberOfTeams; j++) 
+			{
+				// add edges between the sourceVertex and the matches
+				// add the flow capacity of the edge that is stored in the 
+				// two dimensional array Against[][] that contains the number 
+				// of matches each team has against each other
+				m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex, iCurrentVertex, m_aaiAgainst[i][j]));
+								
+				// add edge between the match vertex and the two teams playing in that match
+				// team one
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + i, Double.POSITIVE_INFINITY));		
+				// team two
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + j, Double.POSITIVE_INFINITY));
+				
+				
+				iCurrentVertex++;				
+			}
+			
+			// add edge between the teams and the target vertex
+			// the capacity of these edges is the difference between the
+			// team we are checking, their wins + remaining games - all the other
+			// teams total wins
+			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, tVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i]));
 		}	
 		
-		// add edges from teams to vertex t (sinkIndex)		
-		for(int i = m_iNumberOfMatches ;i < m_FlowNetwork.V(); i++)
-		{
-			m_FlowNetwork.addEdge(new FlowEdge(i, tVertexIndex, Double.POSITIVE_INFINITY));			
-		}
-		
-		// add nested for loop to connect matches with teams
-		for (int i = 0; i < m_iNumberOfTeams; i++) {
-			for (int j = i + 1; j < m_iNumberOfTeams; j++) {
-								
-				// connect matches with teams here
-				
-			}	
-		}
-		// connect teams to the end vertex t, index 11
 		
 		// print the flow network
 		StdOut.println(m_FlowNetwork);		
@@ -208,15 +220,13 @@ public class BaseballElimination {
 	}
 	
 	public Iterable<String> certificateOfElimination(String team)
-	{
-		StdOut.printf("in certificateOfElimination %s\n", team);
+	{		
 		return null;
 	}
 
 	/**
 	 * @param args
-	 */
-	
+	 */	
 	public static void main(String[] args) 
 	{		
 		BaseballElimination division = new BaseballElimination(args[0]);
