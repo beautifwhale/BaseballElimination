@@ -82,8 +82,7 @@ public class BaseballElimination {
 			for (int j = 0; j < m_iNumberOfTeams; j++) {
 				// input the number of games
 				m_aaiAgainst[i][j] = in.readInt();
-				StdOut.printf("%d ", m_aaiAgainst[i][j]);
-
+				//StdOut.printf("%d ", m_aaiAgainst[i][j]);
 			}			
 			//StdOut.print("\n");
 		}
