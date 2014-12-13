@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Baseball Elimination
  * 
@@ -18,6 +21,9 @@ public class BaseballElimination {
 
 	// queue of teams
 	private Queue<String> m_strqTeams;
+	
+	// queue of teams
+	private Queue<String> t_strqTeams;
 
 	// symbol table used to identify teams in the arrays
 	private ST<String, Integer> m_stTeams;
@@ -209,11 +215,10 @@ public class BaseballElimination {
 
 		// run the FordFulkerson algorithm on the flow network to determine
 		// the augmenting paths
-		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork,
-				sVertexIndex, tVertexIndex);
+		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
 
 		// print the flow network
-		StdOut.println(m_FlowNetwork);
+		   StdOut.println(m_FlowNetwork);
 		return true;
 	}
 
@@ -230,6 +235,8 @@ public class BaseballElimination {
 			 */
 			if (m_aiWins[x] + m_aiRemaining[x] - m_aiWins[i] < 0)
 				m_strqTeams.enqueue(team); // add team to queue
+			
+			
 			}
 
 		//System.out.println(m_strqTeams);
@@ -261,15 +268,15 @@ public class BaseballElimination {
 
 					vID++; // go to next vertex
 				}
-
 			}
 			
 			m_FlowNetwork .addEdge(new FlowEdge(m_iNumberOfMatches + i, tVertexIndex, m_aiWins[x] + m_aiRemaining[x] - m_aiWins[i]));
-
 		}
-
-		// TODO FordFulkerson Algorithm
-
+		
+		FordFulkerson fordFulk = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
+		StdOut.println(m_FlowNetwork);
+		
+		
 		return null;
 	}
 
