@@ -2,10 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Baseball Elimination
+ * Algorithms Assignment 
+ * Baseball elimination problem. 
  * 
- * @author David Morton and Donnchadh Murphy
- *
+ * Given the standings in a sports division at some point during the season, 
+ * determine which teams have been mathematically eliminated from winning their division.
+ * 
+ * @author David Morton and Donnchadh Murphy 
  */
 public class BaseballElimination {
 
@@ -129,8 +132,17 @@ public class BaseballElimination {
 		// return the number of wins for the team
 		return m_aiRemaining[iIndex];
 	}
-
-	public int against(String team1, String team2) {
+	
+	/*
+	 * Find the number of games left between two teams.
+	 * 
+	 * @param team1 in the division 
+	 * @param team2 in the division
+	 * 
+	 * @return int the number of games left between the two teams
+	 */
+	public int against(String team1, String team2)
+	{
 		// use the team names as a key values in a symbol table
 		// and use the returned value as the array index in the
 		// against two dimensional array to find the number of
@@ -142,7 +154,14 @@ public class BaseballElimination {
 		return m_aaiAgainst[iIndexTeam1][iIndexTeam2];
 	}
 
-	public boolean isEliminated(String team) {
+	/*
+	 * Has the team been eliminated from the division?
+	 * 
+	 * @param team is the team being checked for elimination
+	 * @return boolean if the team has been eliminated
+	 */
+	public boolean isEliminated(String team)
+	{
 		// check if the team is in the division table
 		if (!m_stTeams.contains(team)) {
 			// throw error if team is not in table
@@ -275,7 +294,6 @@ public class BaseballElimination {
 		
 		FordFulkerson fordFulk = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
 		StdOut.println(m_FlowNetwork);
-		
 		
 		return null;
 	}
