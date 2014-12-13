@@ -327,8 +327,7 @@ public class BaseballElimination {
 
 	/**
 	 *  Main method
-	 *  
-	 *  
+	 *    
 	 * @param args
 	 */
 	public static void main(String[] args) {
