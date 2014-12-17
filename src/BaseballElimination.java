@@ -21,10 +21,7 @@ public class BaseballElimination {
 
 	// queue of teams
 	private Queue<String> m_strqTeams;
-	
-	// queue of teams
-	private Queue<String> t_strqTeams;
-
+		
 	// symbol table used to identify teams in the arrays
 	private ST<String, Integer> m_stTeams;
 
@@ -265,6 +262,13 @@ public class BaseballElimination {
 		return false;
 	}
 
+	/*
+	 * Create certificate of elimination for a team that will state the names
+	 * of the other teams that are the cause of this teams elimination
+	 * 
+	 * @param String team the name of the team that was eliminated
+	 * @return Iterable<String> subset of teams not eliminated
+	 */
 	public Iterable<String> certificateOfElimination(String team) {
 		int x = m_stTeams.get(team); // x holds current team
 		int m_iNumberOfMatches = this.m_iNumberOfTeams* (this.m_iNumberOfTeams - 1) / 2;
