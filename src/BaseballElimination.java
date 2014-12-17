@@ -267,7 +267,7 @@ public class BaseballElimination {
 	 * of the other teams that are the cause of this teams elimination
 	 * 
 	 * @param String team the name of the team that was eliminated
-	 * @return Iterable<String> subset of teams not eliminated
+	 * @return Iterable<String> subset of teams not eliminated; null is not eliminated
 	 */
 	public Iterable<String> certificateOfElimination(String team) {
 		int x = m_stTeams.get(team); // x holds current team
@@ -327,10 +327,9 @@ public class BaseballElimination {
 	}
 
 	/**
-	 *  Main method 
+	 *  Main method used for printing the results. 
 	 *  
-	 *  
-	 * @param args
+	 * @param args the file name that contains the division table
 	 */
 	public static void main(String[] args) {
 		BaseballElimination division = new BaseballElimination(args[0]);
