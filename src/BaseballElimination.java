@@ -276,9 +276,11 @@ public class BaseballElimination {
 	 * @param String team the name of the team that was eliminated
 	 * @return Iterable<String> subset of teams not eliminated; null is not eliminated
 	 */
-	public Iterable<String> certificateOfElimination(String team) {
+	public Iterable<String> certificateOfElimination(String team)
+	{
 		// check if the team is in the division table
-		if (!m_stTeams.contains(team)) {
+		if (!m_stTeams.contains(team)) 
+		{
 			// throw error if team is not in table
 			throw new java.lang.IllegalArgumentException();
 		}
@@ -382,8 +384,7 @@ public class BaseballElimination {
 		Queue<String> strqTeamsInMinCut = new Queue<String>();
 		
 		// index of the team vertex used in the 
-		// string array to identify the team in the 
-		// min cut
+		// string array to identify the team in the min cut
 		int iIndexOfTeam = 0;
 		
 		// loop through each team vertex and check if 
@@ -392,8 +393,8 @@ public class BaseballElimination {
 		{				
 			if(fordFulkerson.inCut(i))
 			{
-				// add the team to the queue if it is in the 
-				// min cut
+				// add the team to the queue if 
+				// it is in the min cut
 				strqTeamsInMinCut.enqueue(m_straTeamNames[iIndexOfTeam]);				
 			}
 			// increment the team index
