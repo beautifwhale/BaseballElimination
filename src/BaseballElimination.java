@@ -285,11 +285,10 @@ public class BaseballElimination {
 
 		// is the team eliminated based on the number
 		// of games it has left to play compared to the
-		// other teams wins
-
+		// other teams wins?
 		int iThisTeam = m_stTeams.get(team); // get the index of the team we are checking
 		//StdOut.println("index of this team " + iThisTeam);
-		Queue<String> strqEliminatedTeams = new Queue<String>();
+		Queue<String> strqSubsetOfTeams = new Queue<String>();
 		
 		// trivial elimination
 		for(int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++)
@@ -301,16 +300,19 @@ public class BaseballElimination {
 			if(iThisTeam == iOtherTeams)
 			{
 				//StdOut.printf(">> checking against self\n");
-				continue;
+				continue; // do not add this team to the queue
 			}
 			else
 			{				
+				// check the number of games left to play against all other
+				// teams
 				//StdOut.printf("checking this team %d against the other team %d\n", iThisTeam, iOtherTeams);
 				if (m_aiWins[iThisTeam] + m_aiRemaining[iThisTeam] < m_aiWins[iOtherTeams]) 
 				{
-					// team is eliminated
+					// add the team that eliminates this team because of 
+					// trivial elimination
 					//StdOut.printf("adding team %d to queue\n", iOtherTeams);
-					strqEliminatedTeams.enqueue(m_straTeamNames[iOtherTeams]);				
+					strqSubsetOfTeams.enqueue(m_straTeamNames[iOtherTeams]);				
 				}				
 			}			
 
@@ -318,7 +320,7 @@ public class BaseballElimination {
 		
 		// if the queue of eliminated teams is not empty
 		// return it as the subset of teams eliminated
-		if(strqEliminatedTeams.size() > 0)return strqEliminatedTeams;
+		if(strqSubsetOfTeams.size() > 0)return strqSubsetOfTeams;
 		
 		// create a flow network
 
