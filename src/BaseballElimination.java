@@ -340,7 +340,7 @@ public class BaseballElimination {
 				
 				for (String t : division.certificateOfElimination(team))
 				{
-					StdOut.print(t);
+					StdOut.printf("%s ",t);
 				}
 				
 				StdOut.println("}");
