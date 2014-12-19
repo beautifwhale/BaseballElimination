@@ -271,7 +271,7 @@ public class BaseballElimination {
 	 */
 	public Iterable<String> certificateOfElimination(String team) {
 		int x = m_stTeams.get(team); // x holds current team
-		int m_iNumberOfMatches = this.m_iNumberOfTeams* (this.m_iNumberOfTeams - 1) / 2;
+		int m_iNumberOfMatches = this.m_iNumberOfTeams * (this.m_iNumberOfTeams - 1) / 2;
 		int vID = 0; // current vertex
 
 		
@@ -281,9 +281,7 @@ public class BaseballElimination {
 			 * If the teams wins + games remaining - wins is greater than 0
 			 */
 			if (m_aiWins[x] + m_aiRemaining[x] - m_aiWins[i] < 0)
-				m_strqTeams.enqueue(team); // add team to queue
-			
-			
+				m_strqTeams.enqueue(team); // add team to queue			
 			}
 
 		//System.out.println(m_strqTeams);
