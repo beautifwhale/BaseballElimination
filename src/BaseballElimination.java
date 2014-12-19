@@ -137,6 +137,7 @@ public class BaseballElimination {
 	 * @param team2 in the division
 	 * 
 	 * @return int the number of games left between the two teams
+	 *  
 	 */
 	public int against(String team1, String team2)
 	{
@@ -156,6 +157,8 @@ public class BaseballElimination {
 	 * 
 	 * @param team is the team being checked for elimination
 	 * @return boolean if the team has been eliminated
+	 * 
+	 * @author David Morton
 	 */
 	public boolean isEliminated(String team)
 	{
