@@ -378,19 +378,30 @@ public class BaseballElimination {
 		// the augmenting paths
 		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sourceVertexIndex, targetVertexIndex);
 		
+		// keep track of the teams that are in the mincut
 		Queue<String> strqTeamsInMinCut = new Queue<String>();
 		
+		// index of the team vertex used in the 
+		// string array to identify the team in the 
+		// min cut
 		int iIndexOfTeam = 0;
 		
+		// loop through each team vertex and check if 
+		// it is in the mincut
 		for(int i = m_iNumberOfMatches; i < (m_iNumberOfMatches + m_iNumberOfTeams); i++)
 		{				
 			if(fordFulkerson.inCut(i))
 			{
+				// add the team to the queue if it is in the 
+				// min cut
 				strqTeamsInMinCut.enqueue(m_straTeamNames[iIndexOfTeam]);				
 			}
+			// increment the team index
 			iIndexOfTeam++;
 		}
 		
+		// return the subset of teams that are in the mincut when
+		// this team gets eliminated
 		if(strqTeamsInMinCut.size() > 0) return strqTeamsInMinCut;
 		else return null;
 		
