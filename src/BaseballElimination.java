@@ -4,8 +4,7 @@
  * 
  * Given the standings in a sports division at some point during the season, 
  * determine which teams have been mathematically eliminated from winning their division.
- * 
- * @author David Morton and Donnchadh Murphy 
+ *  
  */
 public class BaseballElimination {
 
@@ -158,7 +157,6 @@ public class BaseballElimination {
 	 * @param team is the team being checked for elimination
 	 * @return boolean if the team has been eliminated
 	 * 
-	 * @author David Morton
 	 */
 	public boolean isEliminated(String team)
 	{
