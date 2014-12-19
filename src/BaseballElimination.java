@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Algorithms Assignment 
  * Baseball elimination problem. 
@@ -24,10 +21,7 @@ public class BaseballElimination {
 
 	// queue of teams
 	private Queue<String> m_strqTeams;
-	
-	// queue of teams
-	private Queue<String> t_strqTeams;
-
+		
 	// symbol table used to identify teams in the arrays
 	private ST<String, Integer> m_stTeams;
 
@@ -60,6 +54,7 @@ public class BaseballElimination {
 			//StdOut.printf("%s\t", teamName); 
 			// add team to the queue
 			m_strqTeams.enqueue(teamName);
+			m_straTeamNames[i] = teamName;
 
 			// use team name as key and store the array index
 			// as a value in the symbol table
@@ -174,7 +169,9 @@ public class BaseballElimination {
 		// of games it has left to play compared to the
 		// other teams wins
 
-		int iTeam = m_stTeams.get(team); // get the index of the team we are checking
+		int iThisTeam = m_stTeams.get(team); // get the index of the team we are checking
+		
+		Queue<String> strqEliminatedTeams = new Queue<String>();
 		
 		// trivial elimination
 		for(int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++)
@@ -183,13 +180,17 @@ public class BaseballElimination {
 			// teams total wins, the team is eliminated based on:
 			// not being able to catch up with the other teams if they win
 			// all of their games
-			if (m_aiWins[iTeam] + m_aiRemaining[iTeam] < m_aiWins[iOtherTeams]) 
+			if (m_aiWins[iThisTeam] + m_aiRemaining[iThisTeam] < m_aiWins[iOtherTeams]) 
 			{
 				// team is eliminated
-				return true;
+				strqEliminatedTeams.enqueue(team);				
 			}
 
 		} // end for: team is not trivially eliminated
+		
+		// if the queue of eliminated teams is not empty
+		// return true as this team has been eliminated
+		if(strqEliminatedTeams.size() > 0)return true;
 		
 		// create a flow network
 
@@ -237,7 +238,7 @@ public class BaseballElimination {
 			// team we are checking, their wins + remaining games - all the
 			// other
 			// teams total wins
-			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, targetVertexIndex, m_aiWins[iTeam] + m_aiRemaining[iTeam] - m_aiWins[i])); // team -> target
+			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, targetVertexIndex, m_aiWins[iThisTeam] + m_aiRemaining[iThisTeam] - m_aiWins[i])); // team -> target
 		}
 		
 		// print the flow network
@@ -268,67 +269,149 @@ public class BaseballElimination {
 		return false;
 	}
 
-	public Iterable<String> certificateOfElimination(String team) {
-		int x = m_stTeams.get(team); // x holds current team
-		int m_iNumberOfMatches = this.m_iNumberOfTeams* (this.m_iNumberOfTeams - 1) / 2;
-		int vID = 0; // current vertex
+	/*
+	 * Create certificate of elimination for a team that will state the names
+	 * of the other teams that are the cause of this teams elimination
+	 * 
+	 * @param String team the name of the team that was eliminated
+	 * @return Iterable<String> subset of teams not eliminated; null is not eliminated
+	 */
+	public Iterable<String> certificateOfElimination(String team)
+	{
+		// check if the team is in the division table
+		if (!m_stTeams.contains(team)) 
+		{
+			// throw error if team is not in table
+			throw new java.lang.IllegalArgumentException();
+		}
 
+		// is the team eliminated based on the number
+		// of games it has left to play compared to the
+		// other teams wins?
+		int iThisTeam = m_stTeams.get(team); // get the index of the team we are checking
+		//StdOut.println("index of this team " + iThisTeam);
+		Queue<String> strqSubsetOfTeams = new Queue<String>();
 		
-		for (int i = 0; i < this.m_iNumberOfTeams; i++) {
-			
-			/*
-			 * If the teams wins + games remaining - wins is greater than 0
-			 */
-			if (m_aiWins[x] + m_aiRemaining[x] - m_aiWins[i] < 0)
-				m_strqTeams.enqueue(team); // add team to queue
-			
-			
+		// trivial elimination
+		for(int iOtherTeams = 0; iOtherTeams < m_iNumberOfTeams; iOtherTeams++)
+		{			
+			// if the teams wins + remaining games is less than any other
+			// teams total wins, the team is eliminated based on:
+			// not being able to catch up with the other teams if they win
+			// all of their games
+			if(iThisTeam == iOtherTeams)
+			{
+				//StdOut.printf(">> checking against self\n");
+				continue; // do not add this team to the queue
 			}
+			else
+			{				
+				// check the number of games left to play against all other
+				// teams
+				//StdOut.printf("checking this team %d against the other team %d\n", iThisTeam, iOtherTeams);
+				if (m_aiWins[iThisTeam] + m_aiRemaining[iThisTeam] < m_aiWins[iOtherTeams]) 
+				{
+					// add the team that eliminates this team because of 
+					// trivial elimination
+					//StdOut.printf("adding team %d to queue\n", iOtherTeams);
+					strqSubsetOfTeams.enqueue(m_straTeamNames[iOtherTeams]);				
+				}				
+			}			
 
-		//System.out.println(m_strqTeams);
+		} // end for: team is not trivially eliminated
+		
+		// if the queue of eliminated teams is not empty
+		// return it as the subset of teams eliminated
+		if(strqSubsetOfTeams.size() > 0)return strqSubsetOfTeams;
+		
+		// create a flow network
 
-		if (m_strqTeams.size() > 0)
-			return m_strqTeams;
+		// get number of matches
+		m_iNumberOfMatches = m_iNumberOfTeams * (m_iNumberOfTeams - 1) / 2;
 
-		// creating flow network
+		int sourceVertexIndex = m_iNumberOfMatches + m_iNumberOfTeams; // sourceIndex
+		int targetVertexIndex = sourceVertexIndex + 1; // targetIndex
+
+		// number of vertices = m_iNumberOfMatches + m_iNumberOfTeams +
+		// sourceVertex + targetVertex
 		FlowNetwork m_FlowNetwork = new FlowNetwork(m_iNumberOfMatches
 				+ m_iNumberOfTeams + 2);
-		int sVertexIndex = m_iNumberOfMatches + m_iNumberOfTeams; // sourceIndex
-		int tVertexIndex = sVertexIndex + 1; // targetIndex
+
+
+		int iCurrentVertex = 0; // the first match
 		
-		// adding edges to our vertices
-		for (int i = 0; i < m_iNumberOfTeams; i++) {
-			for (int j = i + 1; j < m_iNumberOfTeams; j++) {
+		//  add edges between the vertices in the flow network
+		for(int i = 0; i < m_iNumberOfTeams; i++) 
+		{
+			// connect the matches to appropriate team vertex
+			// source -> match -> team -> target
+			for (int j = i + 1; j < m_iNumberOfTeams; j++) 
+			{
+				// add edges between the sourceVertex and the matches.
+				// set the flow capacity of the edge that is stored in the 
+				// two dimensional array Against[][] that contains the number 
+				// of matches each team has against each other
 
-				if (i == j) {
-
-					// adding edges to the source vertex that match
-					m_FlowNetwork.addEdge(new FlowEdge(sVertexIndex, vID, m_aaiAgainst[i][j]));
-
-					// add edge between the match vertex and the two teams
-					// playing in that match
-					// team one
-					m_FlowNetwork.addEdge(new FlowEdge(vID, m_iNumberOfMatches + i, Double.POSITIVE_INFINITY));
-					// team two
-					m_FlowNetwork.addEdge(new FlowEdge(vID, m_iNumberOfMatches + j, Double.POSITIVE_INFINITY));
-
-					vID++; // go to next vertex
-				}
+				m_FlowNetwork.addEdge(new FlowEdge(sourceVertexIndex, iCurrentVertex, m_aaiAgainst[i][j]));// source -> match
+								
+				// add edge between the match vertex and the two teams playing in that match
+				// team one
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + i, Double.POSITIVE_INFINITY)); // match -> team1
+				// team two
+				m_FlowNetwork.addEdge(new FlowEdge(iCurrentVertex, m_iNumberOfMatches + j, Double.POSITIVE_INFINITY)); // match -> team2
+								
+				// increment the match counter to deal with team1 & team2
+				// in the next match
+				iCurrentVertex++; // next match			
 			}
-			
-			m_FlowNetwork .addEdge(new FlowEdge(m_iNumberOfMatches + i, tVertexIndex, m_aiWins[x] + m_aiRemaining[x] - m_aiWins[i]));
+
+			// add edge between the teams and the target vertex
+			// the capacity of these edges is the difference between the
+			// team we are checking, their wins + remaining games - all the
+			// other
+			// teams total wins
+			m_FlowNetwork.addEdge(new FlowEdge(m_iNumberOfMatches + i, targetVertexIndex, m_aiWins[iThisTeam] + m_aiRemaining[iThisTeam] - m_aiWins[i])); // team -> target
 		}
 		
-		FordFulkerson fordFulk = new FordFulkerson(m_FlowNetwork, sVertexIndex, tVertexIndex);
-		StdOut.println(m_FlowNetwork);
+		// print the flow network
+		//StdOut.println(m_FlowNetwork);
 		
-		return null;
+		// run the FordFulkerson algorithm on the flow network to determine
+		// the augmenting paths
+		FordFulkerson fordFulkerson = new FordFulkerson(m_FlowNetwork, sourceVertexIndex, targetVertexIndex);
+		
+		// keep track of the teams that are in the mincut
+		Queue<String> strqTeamsInMinCut = new Queue<String>();
+		
+		// index of the team vertex used in the 
+		// string array to identify the team in the min cut
+		int iIndexOfTeam = 0;
+		
+		// loop through each team vertex and check if 
+		// it is in the mincut
+		for(int i = m_iNumberOfMatches; i < (m_iNumberOfMatches + m_iNumberOfTeams); i++)
+		{				
+			if(fordFulkerson.inCut(i))
+			{
+				// add the team to the queue if 
+				// it is in the min cut
+				strqTeamsInMinCut.enqueue(m_straTeamNames[iIndexOfTeam]);				
+			}
+			// increment the team index
+			iIndexOfTeam++;
+		}
+		
+		// return the subset of teams that are in the mincut when
+		// this team gets eliminated
+		if(strqTeamsInMinCut.size() > 0) return strqTeamsInMinCut;
+		else return null;
+		
 	}
 
 	/**
-	 *  Main method
-	 *    
-	 * @param args
+	 *  Main method used for printing the results. 
+	 *  
+	 * @param args the file name that contains the division table
 	 */
 	public static void main(String[] args) {
 		BaseballElimination division = new BaseballElimination(args[0]);
@@ -339,10 +422,10 @@ public class BaseballElimination {
 				
 				for (String t : division.certificateOfElimination(team))
 				{
-					StdOut.print(t);
+					StdOut.printf("%s ",t);
 				}
 				
-				StdOut.println("}");
+				StdOut.println(" }");
 			} else {
 				StdOut.println(team + " is not eliminated");
 			}
