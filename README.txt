@@ -1,0 +1,1 @@
+Baseball elimination problem outlined in the assignment provided by http://algs4.cs.princeton.edu
